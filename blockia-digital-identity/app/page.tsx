@@ -27,6 +27,10 @@ export default function Home() {
         signature,
         publicKey,
       })
+      //this shouldn't be done in production obviously
+      console.log("Public key:", publicKey)
+      console.log("Signature:", signature)
+      console.log("MESSAGE:", MESSAGE)
 
       setIsVerified(response.data.verified)
       setResult(response.data.message)
