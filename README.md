@@ -1,5 +1,4 @@
-# Sign & Verify - Digital Identity Demo
-
+# Blockia Internship 2025
 A demonstration of digital identity verification using cryptographic signatures, similar to how modern passwordless authentication systems work.
 
 ## Submission Information
