@@ -1,80 +1,98 @@
-# Blockia Labs – Spring 2025 Internship Challenge
+# Sign & Verify - Digital Identity Demo
 
-### Title: Sign & Verify – A Personal Digital Identity Demo
+A demonstration of digital identity verification using cryptographic signatures, similar to how modern passwordless authentication systems work.
 
-## What You'll Build
-A simple web application that shows how digital signatures work - similar to how modern passwordless login systems function. Instead of using a password, you'll prove your identity using cryptography (like signing a digital document).
+## Submission Information
 
-## Technical Stack (What You'll Use)
-- **Frontend**: Next.js framework with React and TypeScript
-- **Backend**: Next.js API Routes (built into Next.js)
-- **Cryptography**: Choose one of these libraries:
-  - crypto.subtle (built into browsers)
-  - tweetnacl (a simple crypto library)
-  - Node's crypto module (built into Node.js)
+- **Name**: Filip Kenkov
+- **GitHub Username**: flpknk
+- **Sample Signed Message**: 
+  - Message: `BLOCKIA-Filip Kenkov-flpknk-20250411`
+  - Signature: `YourSignatureWillAppearHereAfterRunningTheApp`
+  - Public Key: `YourPublicKeyWillAppearHereAfterRunningTheApp`
 
-## Digital Identity Details
-You need to hardcode these exact values in your code:
-- Your Name (example: "Elena Jovanova") - it doesn't need to be your real name, as we don't collect personal information
-- First 6 characters of your GitHub ID (example: "elenaj")
-- Today's Date in YYYYMMDD format (example: "20250414" for April 14, 2025)
+## Overview
 
-## How the App Should Work
-1. Display a simple frontend page with a "Login with your ID" button
-2. When clicked, your app should:
-   - Create a new cryptographic key pair (like creating a digital signature stamp - choose any algorithm: ECDSA or EdDSA)
-   - Create and sign a message that includes your identity details (message format provided below)
-   - Send this information to your backend API (API format described below) to verify it's really you
-   - Show the outcome of the verification on the page
+This application demonstrates how digital signatures can be used to verify a user's identity without passwords. Instead of using a password, the application uses cryptography to prove identity - similar to signing a digital document.
 
-## Message Structure
-Your message should follow this format:
-```
-BLOCKIA-<YOUR_NAME>-<FIRST_6_CHARS_OF_GITHUB_ID>-<CURRENT_DATE>
-```
-For example: `BLOCKIA-ElenaJovanova-elenaj-20250414`
+## How It Works
 
-## API Communication
-Your backend app should implement this API endpoint:
+### Cryptographic Concepts
 
-### Verify Signature (/api/verify)
-- **Method**: POST
-- **Request Body**:
-```json
-{
-  "message": "BLOCKIA-YourName-github-20250414",
-  "signature": "base64-encoded-signature",
-  "publicKey": "base64-encoded-public-key"
-}
-```
-- **Response**:
-```json
-{
-  "verified": true,
-  "message": "Identity verified successfully"
-}
-```
+The application uses public-key cryptography (specifically EdDSA with the TweetNaCl library) which involves:
 
-## How to Submit Your Project
-1. Fork this repostiry
-2. Modify it to solve the chellenge
-2. Include in your README:
-   - Your name
-   - Your GitHub username
-   - A sample of your signed message
-   - Instructions for running your project
-3. Send the project Github link as response to contact@blockialabs.com
-3. BONUS: Record and attach a 1-2 minute video (ex. using Loom) explaining HOW your app is working
+1. **Key Pair Generation**: Creates two mathematically related keys:
+   - **Public Key**: Shared openly and used to verify signatures
+   - **Private Key**: Kept secret and used to create signatures
 
-## Time Limit
-You have 5 days to complete and submit this challenge.
+2. **Digital Signatures**: A mathematical scheme that proves:
+   - The message was created by the owner of the private key (authentication)
+   - The message hasn't been altered (integrity)
 
-## Important Note
-This is an educational exercise. No real cryptographic keys or personal information should be shared with anyone.
+3. **Verification**: Anyone with the public key can verify that a signature was created by the corresponding private key without needing access to the private key.
 
-## Need Help?
-Focus on:
-1. Setting up a basic Next.js project
-2. Understanding how digital signatures work (plenty of tutorials online)
-3. Getting the frontend-backend communication working
-4. Testing that your verification works correctly
+### Application Flow
+
+1. **User Clicks "Login"**:
+   - The application generates a new cryptographic key pair
+   - The private key is kept in memory (never stored)
+   - The public key could be registered with a service (in a real application)
+
+2. **Message Creation**:
+   - A message is created with the format: `BLOCKIA-<NAME>-<GITHUB_ID>-<DATE>`
+   - This message serves as the data to be signed
+
+3. **Signing Process**:
+   - The application signs the message using the private key
+   - This creates a unique signature that can only be produced with that private key
+
+4. **Verification**:
+   - The message, signature, and public key are sent to the server
+   - The server verifies that the signature is valid for the given message and public key
+   - If valid, the user's identity is confirmed
+
+5. **Result Display**:
+   - The application shows whether the verification was successful
+
+## Technical Implementation
+
+### Frontend (Next.js App Router)
+
+- React components for the user interface
+- Client-side cryptographic operations using TweetNaCl
+- Axios for API communication
+
+### Backend (Next.js API Routes)
+
+- API endpoint for signature verification
+- Server-side validation of the cryptographic proof
+
+### Cryptography (TweetNaCl)
+
+- Key pair generation using Ed25519 algorithm
+- Message signing and verification
+- Base64 encoding/decoding for data transmission
+
+## Code Structure
+
+- `app/page.tsx`: Main UI component with the login button and verification logic
+- `app/api/verify/route.ts`: API endpoint for verifying signatures
+- `utils/crypto.ts`: Cryptographic utility functions
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18.x or later
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies
+- npm install/yarn install
+3. Run the dev server
+- npm run dev/yarn dev
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Click the "Login with your ID" button to generate a key pair, sign the message, and verify the signature.
+6. Check the browser console (F12 > Console) to see the actual message, signature, and public key values.
